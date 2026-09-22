@@ -13,7 +13,7 @@
  */
 
 import type {
-  Batch, Submission, GraphData, Report, FlaggedPair, User, ApiResponse,
+  Batch, Submission, GraphData, Report, FlaggedPair, User, ApiResponse, SimilarityEdge
 } from "./types"
 
 // ─── Latency simulation ────────────────────────────────────────────────────
@@ -116,8 +116,7 @@ export const MOCK_GRAPH_DATA: GraphData = {
     { source: "sub-029", target: "sub-030", score: 0.74, method: "winnowing", isFlagged: false },
     { source: "sub-031", target: "sub-032", score: 0.83, method: "combined",  isFlagged: true },
     { source: "sub-033", target: "sub-034", score: 0.58, method: "ast",       isFlagged: false },
-    { source: "sub-035", target: "sub-000", score: 0.47, method: "ast",       isFlagged: false },
-  ].map(l => ({ ...l, value: l.score })),
+  ].map(l => ({ ...l, value: l.score } as SimilarityEdge & { value: number })),
 }
 
 export const MOCK_REPORTS: Report[] = [

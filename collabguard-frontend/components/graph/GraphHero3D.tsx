@@ -120,7 +120,7 @@ export function GraphHero3D({
         <ForceGraph3D
           width={width}
           height={height}
-          graphData={data as Parameters<typeof ForceGraph3D>[0]["graphData"]}
+          graphData={data as any}
           backgroundColor={colors.graph.bg}
           // Node appearance
           nodeLabel={showLabels ? "label" : undefined}

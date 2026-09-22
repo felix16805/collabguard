@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono, DM_Sans } from "next/font/google"
+import Script from "next/script"
 import "./globals.css"
 
 // ─── Font loading — self-hosted, zero layout shift ────────────────────────
@@ -23,7 +24,6 @@ const dmSans = DM_Sans({
   display: "swap",
   weight: ["300", "400", "500", "600"],
   style: ["normal", "italic"],
-  axes: ["opsz"],
 })
 
 // ─── Site-wide metadata ───────────────────────────────────────────────────
@@ -114,19 +114,15 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geist.variable} ${geistMono.variable} ${dmSans.variable}`}
     >
-      <head>
-        {/* Plausible analytics — privacy-respecting, no cookies, no banner needed */}
+      <body className="antialiased">
+        {children}
         {process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN && (
-          <script
-            defer
-            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+          <Script
             src="https://plausible.io/js/script.js"
+            data-domain={process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN}
+            strategy="afterInteractive"
           />
         )}
-        {/* Preconnect for fonts already handled by next/font */}
-      </head>
-      <body>
-        {children}
       </body>
     </html>
   )

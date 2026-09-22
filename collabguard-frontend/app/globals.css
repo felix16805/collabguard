@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
 /*
  * CollabGuard — Design System CSS
  *
@@ -20,17 +23,10 @@
  * Not purple. Not purple-to-blue. Not rainbow.
  *
  * Background: #0D0C0B — near-black with a 2° warm tilt. Not pure #000. Not blue-black.
+ *
+ * Fonts loaded via next/font in app/layout.tsx (zero layout shift, self-hosted).
  */
 
-@import "tailwindcss";
-
-/* ─── Font imports ────────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap');
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-/*
- ---break---
- */
 @custom-variant dark (&:is(.dark *));
 
 /* ─── Design tokens ───────────────────────────────────────────────────────── */

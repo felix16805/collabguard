@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /security
+Allow: /contact
+Allow: /privacy-policy
+Allow: /terms
+
+Disallow: /dashboard
+Disallow: /submissions
+Disallow: /analysis
+Disallow: /reports
+Disallow: /settings
+Disallow: /login
+Disallow: /signup
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /api/
+
+Sitemap: https://collabguard.vercel.app/sitemap.xml

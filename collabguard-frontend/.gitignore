@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Ignore agent/tool skill-integration folders (local tooling, not app code)
+/.*/
+!/.gitignore
+!/.env.example
+skills/
+skills-lock.json
