@@ -1,4 +1,4 @@
-# CollabGuard — Frontend Build Prompt (for Antigravity agent)
+# CollabGuard — Frontend Build
 
 You are building the **entire frontend** for **CollabGuard**, a graph-based academic integrity / code-collusion detection system, from an empty repository. Read this whole document before writing any code. Do not skip the anti-pattern section — it is enforced, not a suggestion.
 
