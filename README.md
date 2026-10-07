@@ -2,7 +2,7 @@
 
 > **Course**: BCSE406L — NoSQL Databases (Winter Semester 2025–26)  
 > **Institution**: Vellore Institute of Technology (VIT), Vellore  
-> **Student / Author**: Dipanjan Das ([@felix16805](https://github.com/felix16805)) — Reg. No. `21BCE1001` (Batch NS25)  
+> **Student / Author**: Dipanjan Das ([@felix16805](https://github.com/felix16805)) — Reg. No. `23BCE0131` (Batch NS25)  
 > **Faculty Guide**: Dr. D. Vivek  
 
 ---
