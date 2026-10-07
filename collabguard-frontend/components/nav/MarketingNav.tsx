@@ -8,9 +8,10 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 const NAV_LINKS = [
-  { href: "/about",    label: "About" },
-  { href: "/security", label: "Security" },
-  { href: "/contact",  label: "Contact" },
+  { href: "/about",        label: "About" },
+  { href: "/components",   label: "Components" },
+  { href: "/resources",    label: "Resources" },
+  { href: "/architecture", label: "Architecture" },
 ] as const
 
 export function MarketingNav() {
