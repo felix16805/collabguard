@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.db.mongodb import mongodb
 from app.db.neo4j import neo4j_manager
-from app.routers import auth, submissions, graph, reports, demo
+from app.routers import auth, submissions, graph, reports, demo, ml
 
 logging.basicConfig(
     level=logging.INFO,
@@ -64,6 +64,7 @@ app.include_router(submissions.router, prefix=settings.API_V1_STR)
 app.include_router(graph.router, prefix=settings.API_V1_STR)
 app.include_router(reports.router, prefix=settings.API_V1_STR)
 app.include_router(demo.router, prefix=settings.API_V1_STR)
+app.include_router(ml.router, prefix=settings.API_V1_STR)
 
 
 @app.get("/")
