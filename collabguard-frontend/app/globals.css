@@ -384,11 +384,20 @@ h1 em { color: var(--primary); font-style: normal; }
 .scope-section { border-top: 1px solid var(--line); padding: 125px 7.5% 135px; }
 .scope-head { display: grid; grid-template-columns: 1fr 1fr; align-items: end; }
 .scope-head .section-kicker { grid-column: 1 / -1; }
-.scope-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: 60px; background: var(--line-strong); }
+.scope-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-top: 60px; background: var(--line-strong); }
+@media (max-width: 1100px) {
+  .scope-grid { grid-template-columns: repeat(2, 1fr); }
+}
 .scope-card { min-height: 255px; background: #151813; padding: 22px 20px; }
 .scope-card > span { color: var(--primary); font: 400 10px var(--mono); }
 .scope-card h3 { margin: 49px 0 13px; font-size: 21px; letter-spacing: -.045em; }
 .scope-card p { color: var(--muted); font-size: 13px; line-height: 1.65; max-width: 260px; }
+.team-container { display: grid; grid-template-columns: 1fr; max-width: 860px; margin-top: 60px; background: var(--line-strong); border: 1px solid var(--line-strong); }
+.team-card { min-height: auto; background: #151813; padding: 32px 36px; display: flex; flex-direction: column; gap: 14px; }
+@media (max-width: 820px) {
+  .team-container { margin-top: 45px; }
+  .team-card { padding: 24px 20px; }
+}
 .objectives-section { display: grid; grid-template-columns: .85fr 1.15fr; gap: 10%; border-top: 1px solid var(--line); padding: 120px 7.5% 145px; }
 .objective-list { border-top: 1px solid var(--line); }
 .objective-list > div { display: grid; grid-template-columns: 36px 1fr 18px; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); padding: 17px 0; }

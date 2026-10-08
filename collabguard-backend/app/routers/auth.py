@@ -68,7 +68,7 @@ async def login(credentials: UserLogin):
         user = {
             "id": "fac_default_1",
             "email": credentials.email,
-            "name": "Dr. D. Vivek (Faculty Guide)",
+            "name": "Faculty Guide",
             "department": "Computer Science & Engineering",
             "course_code": "BCSE406L",
             "password_hash": get_password_hash("password123"),

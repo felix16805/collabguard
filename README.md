@@ -47,16 +47,16 @@ Relational databases (SQL) require multi-table recursive self-joins to find mult
 ## 2. WHAT We Did (Architecture & Core Features)
 
 ```
-                            ┌──────────────────────────────────────────────┐
-                            │      Next.js 16 Interactive Frontend         │
-                            │  (CardNav, GraphBoard, ClusterExplorer, Diffs)│
-                            └──────────────────────┬───────────────────────┘
+                            ┌─────────────────────────────────────────────────┐
+                            │      Next.js 16 Interactive Frontend            │
+                            │  (CardNav, GraphBoard, ClusterExplorer, Diffs)  │
+                            └──────────────────────┬──────────────────────────┘
                                                    │ REST API / JSON
                                                    ▼
-                            ┌──────────────────────────────────────────────┐
-                            │           FastAPI Python Backend             │
+                            ┌───────────────────────────────────────────────┐
+                            │           FastAPI Python Backend              │
                             │ (Auth, Batch Ingestion, Detection, ML, Graph) │
-                            └──────┬───────────────────────┬───────────────┘
+                            └──────┬───────────────────────┬────────────────┘
                                    │                       │
              ┌─────────────────────┴──────┐         ┌──────┴────────────────────┐
              ▼                            ▼         ▼                           ▼
@@ -410,7 +410,7 @@ ORDER BY co_conspirators_count DESC, mean_shared_similarity DESC;
 
 1. **Faculty Review Dashboard**: Navigate to `http://localhost:3000/components` for the interactive graph canvas, Louvain community explorer, and shortest-path playback.
 2. **Interactive NoSQL Operations Visualizer**: Navigate to `http://localhost:3000/database` for live CRUD execution, interactive `explain()` execution plan analyzer, real-time aggregation pipeline inspection, and schema definitions.
-3. **Faculty Authentication Portal**: Navigate to `http://localhost:3000/login` to authenticate via JWT (with quick-fill presets for Guide Dr. D. Vivek `faculty@vit.ac.in` and Student Lead Dipanjan Das `demo@collabguard.edu`), register accounts, and inspect cryptographic claims in real time.
+3. **Faculty Authentication Portal**: Navigate to `http://localhost:3000/login` to authenticate via JWT (with quick-fill presets for Faculty Guide `faculty@vit.ac.in` and Student Lead Dipanjan Das `demo@collabguard.edu`), register accounts, and inspect cryptographic claims in real time.
 4. **API & Database Swagger UI**: Access `http://localhost:8000/api/docs` to test all CRUD, indexing, aggregation, and authentication endpoints interactively via Swagger UI.
 
 ---

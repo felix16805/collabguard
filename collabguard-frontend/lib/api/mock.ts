@@ -25,7 +25,7 @@ const jitter = (base: number) => base + Math.random() * 100 - 50
 const MOCK_USER: User = {
   id:         "a1b2c3d4-0000-0000-0000-000000000001",
   email:      "instructor@vit.ac.in",
-  name:       "Dr. D. Vivek",
+  name:       "Faculty Instructor",
   role:       "instructor",
   courseId:   "course-bcse406l-ns25",
   createdAt:  "2025-01-10T08:00:00.000Z",

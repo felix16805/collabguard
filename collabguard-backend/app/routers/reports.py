@@ -45,7 +45,7 @@ async def get_batch_report(batch_id: str):
         "audit_metadata": {
             "evaluation_engine": "CollabGuard v0.1.0 (AST Tokenizer + Winnowing + Neo4j Louvain)",
             "institution": "Vellore Institute of Technology",
-            "guide": "Dr. D. Vivek",
+            "guide": "Faculty Guide",
             "author": "Dipanjan Das (felix16805)",
         },
     }

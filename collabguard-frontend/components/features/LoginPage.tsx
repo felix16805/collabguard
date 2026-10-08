@@ -100,9 +100,9 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
         ) {
           const fallbackUser: FacultyUser = email === "faculty@vit.ac.in"
             ? {
-                id: "fac_guide_vivek",
+                id: "fac_guide_demo",
                 email: "faculty@vit.ac.in",
-                name: "Dr. D. Vivek (Faculty Guide)",
+                name: "Faculty Guide",
                 department: "School of Computer Science and Engineering (SCOPE)",
                 course_code: "BCSE406L",
                 role: "faculty",
@@ -144,9 +144,9 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
       ) {
         const fallbackUser: FacultyUser = email === "faculty@vit.ac.in"
           ? {
-              id: "fac_guide_vivek",
+              id: "fac_guide_demo",
               email: "faculty@vit.ac.in",
-              name: "Dr. D. Vivek (Faculty Guide)",
+              name: "Faculty Guide",
               department: "School of Computer Science and Engineering (SCOPE)",
               course_code: "BCSE406L",
               role: "faculty",
@@ -744,7 +744,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
                   >
                     <div>
                       <strong style={{ fontSize: "12px", display: "block" }}>
-                        Dr. D. Vivek (Faculty Guide)
+                        Faculty Guide
                       </strong>
                       <span style={{ fontSize: "11px", color: "var(--muted)", fontFamily: "var(--mono)" }}>
                         faculty@vit.ac.in · password123
@@ -1089,7 +1089,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
             </div>
             <ul style={{ margin: 0, paddingLeft: "18px", fontSize: "12px", color: "var(--muted)", lineHeight: 1.7 }}>
               <li>
-                <strong style={{ color: "var(--foreground)" }}>Faculty Guide (Dr. D. Vivek)</strong>: Full access to batch submissions, AST tokenization, Louvain cluster exploration, and active learning retraining feedback.
+                <strong style={{ color: "var(--foreground)" }}>Faculty Guide / Course Instructor</strong>: Full access to batch submissions, AST tokenization, Louvain cluster exploration, and active learning retraining feedback.
               </li>
               <li>
                 <strong style={{ color: "var(--foreground)" }}>External Reviewer / Evaluator</strong>: Read and inspect permissions over similarity graph, shortest-path evidence chains, and NoSQL aggregation reports.
