@@ -12,9 +12,8 @@ const CARD_NAV_ITEMS = [
     bgColor: "#1b2117",
     textColor: "#DBFF5C",
     links: [
-      { label: "Home", href: "/" },
       { label: "About", href: "/about" },
-      { label: "Faculty Login", href: "/login" },
+      { label: "Architecture", href: "/architecture" },
     ],
   },
   {
@@ -24,7 +23,6 @@ const CARD_NAV_ITEMS = [
     links: [
       { label: "Dashboard Demo", href: "/components" },
       { label: "NoSQL Database", href: "/database" },
-      { label: "Architecture", href: "/architecture" },
     ],
   },
   {
@@ -38,8 +36,6 @@ const CARD_NAV_ITEMS = [
 ];
 
 const MOBILE_MENU_ITEMS = [
-  { label: "Home", link: "/" },
-  { label: "Faculty Login", link: "/login" },
   { label: "About the Project", link: "/about" },
   { label: "Dashboard Demo", link: "/components" },
   { label: "NoSQL Database (CRUD/Index/Agg)", link: "/database" },

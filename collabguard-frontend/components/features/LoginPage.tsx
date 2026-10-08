@@ -90,6 +90,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
         setCurrentUser(data.user);
         localStorage.setItem("collabguard_token", data.access_token);
         localStorage.setItem("collabguard_user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("auth_changed"));
         setSuccessMsg(`Welcome, ${data.user.name}! JWT access token issued successfully.`);
       } else {
         // Fallback demo credentials support if backend daemon is not active
@@ -129,6 +130,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
           setCurrentUser(fallbackUser);
           localStorage.setItem("collabguard_token", mockJwt);
           localStorage.setItem("collabguard_user", JSON.stringify(fallbackUser));
+          window.dispatchEvent(new Event("auth_changed"));
           setSuccessMsg(`Authenticated as ${fallbackUser.name}. Secure JWT issued.`);
         } else {
           setErrorMsg("Invalid credentials. Try demo credentials: faculty@vit.ac.in / password123");
@@ -172,6 +174,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
         setCurrentUser(fallbackUser);
         localStorage.setItem("collabguard_token", mockJwt);
         localStorage.setItem("collabguard_user", JSON.stringify(fallbackUser));
+        window.dispatchEvent(new Event("auth_changed"));
         setSuccessMsg(`Authenticated as ${fallbackUser.name} (Simulation Mode).`);
       } else {
         setErrorMsg("Authentication failed. Use pre-seeded credential presets below.");
@@ -211,6 +214,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
         setCurrentUser(data.user);
         localStorage.setItem("collabguard_token", data.access_token);
         localStorage.setItem("collabguard_user", JSON.stringify(data.user));
+        window.dispatchEvent(new Event("auth_changed"));
         setSuccessMsg(`Account created for ${data.user.name}. You are now logged in!`);
       } else {
         // Fallback simulation
@@ -236,6 +240,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
         setCurrentUser(newUser);
         localStorage.setItem("collabguard_token", mockJwt);
         localStorage.setItem("collabguard_user", JSON.stringify(newUser));
+        window.dispatchEvent(new Event("auth_changed"));
         setSuccessMsg(`Faculty account created for ${newUser.name}!`);
       }
     } catch {
@@ -270,6 +275,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
   const handleLogout = () => {
     localStorage.removeItem("collabguard_token");
     localStorage.removeItem("collabguard_user");
+    window.dispatchEvent(new Event("auth_changed"));
     setToken(null);
     setCurrentUser(null);
     setSuccessMsg("Logged out successfully.");

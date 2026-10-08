@@ -37,6 +37,8 @@ import Lenis from "lenis";
 import NavShell from "./NavShell";
 import DatabaseOperations from "./DatabaseOperations";
 import LoginPage from "./LoginPage";
+import CodeDiffViewer from "./CodeDiffViewer";
+import MLPredictInspector from "./MLPredictInspector";
 
 type NodeKind = "student" | "submission" | "assignment";
 type RouteKey = "/" | "/about" | "/components" | "/resources" | "/architecture" | "/database" | "/login";
@@ -289,7 +291,7 @@ function ComponentsPage() {
   const relatedNodes = graphNodes.filter((node) => selectedInsight.connections.includes(node.label));
   const highlightedNodeIds = [selectedNode.id, ...relatedNodes.map((node) => node.id)];
   const selectNode = (node: GraphNode) => { setSelectedNodeId(node.id); setTab("graph"); setShowHistory(false); };
-  return <><PageIntro index="02" eyebrow="COMPONENTS / FACULTY DASHBOARD" title={<>A high-signal review surface for <em>faculty investigators.</em></>} body="These are the working pieces of the CollabGuard faculty dashboard: the Louvain cluster explorer, the evidence-chain graph, the node inspector with Winnowing fingerprint data, and the shortest-path playback panel." /><ClusterExplorer /><section className="components-showcase section-frame"><div className="showcase-header"><div><SectionMarker>04 — GRAPH VIEW</SectionMarker><h2>Evidence is the component.</h2></div><span className="demo-label"><CircleDot size={13} /> CLICK A NODE TO TRACE ITS LINKS</span></div><div className="component-grid"><div className="component-graph"><GraphBoard onSelect={selectNode} highlightedNodeIds={highlightedNodeIds} /></div><aside className="component-inspector"><div className="drawer-head"><span>NODE INSPECTOR / {selectedNode.kind.toUpperCase()}</span><ScanSearch size={17} /></div><div className="drawer-selected"><div className={`drawer-icon kind-${selectedNode.kind}`}>{selectedNode.short}</div><div><h3>{selectedNode.label}</h3><span>{selectedNode.meta}</span></div></div><p className="drawer-detail">{selectedInsight.signal}</p><div className="inspector-meta-grid"><div><span>OWNER / GROUP</span><strong>{selectedInsight.owner}</strong></div><div><span>COURSE WINDOW</span><strong>{selectedInsight.course}</strong></div><div><span>LAST OBSERVED</span><strong>{selectedInsight.lastSeen}</strong></div><div><span>FINGERPRINT</span><strong>{selectedInsight.fingerprint}</strong></div></div><div className="related-connections"><div className="related-heading"><span className="filter-label">RELATED NODES</span><strong>{relatedNodes.length} linked</strong></div>{relatedNodes.length ? <div className="related-list">{relatedNodes.map((node) => <button key={node.id} onClick={() => selectNode(node)}><span className={`related-dot dot-${node.kind}`} />{node.label}<ChevronRight size={13} /></button>)}</div> : <span className="related-empty">No related nodes in the current view.</span>}</div><div className="drawer-metrics"><div><span>WINNOWING SCORE</span><strong>{selectedNode.id === "sub-42" ? "0.81" : selectedNode.id === "sub-17" ? "0.81" : "0.62"}</strong></div><div><span>HOPS AWAY</span><strong>{selectedNode.id === "sub-42" ? "02" : "01"}</strong></div></div><button className={`evidence-toggle ${showHistory ? "is-open" : ""}`} onClick={() => setShowHistory((current) => !current)}><span><Clock3 size={14} /> {showHistory ? "Collapse evidence timeline" : "Expand evidence timeline"}</span><ChevronRight size={14} /></button>{showHistory && <div className="evidence-timeline">{selectedHistory.map((event, index) => <div className="evidence-event" key={`${event.time}-${event.label}`}><div className={`evidence-event-marker ${event.status}`}><span>{String(index + 1).padStart(2, "0")}</span></div><div className="evidence-event-copy"><div><strong>{event.label}</strong><time>{event.time}</time></div><p>{event.detail}</p></div></div>)}</div>}<button className="drawer-action" onClick={() => setTab("evidence")}>Open full evidence chain <ArrowUpRight size={15} /></button></aside></div></section><section className="component-lab section-frame"><div className="lab-tabs">{[["graph", "Graph nodes"], ["evidence", "Evidence row"], ["states", "System states"]].map(([key, label]) => <button key={key} className={tab === key ? "is-active" : ""} onClick={() => setTab(key)}>{label}</button>)}</div>{tab === "graph" && <div className="lab-panel"><div className="token-demo"><div className="token token-student">student</div><div className="token-line" /><div className="token token-submission">submission</div><div className="token-line" /><div className="token token-assignment">assignment</div></div><div><span className="overline">NODE LANGUAGE</span><h3>Three shapes, one readable graph.</h3><p>Shape carries semantic meaning before a faculty member opens the inspector. Circles identify people (Student nodes in Neo4j). Squares identify source artifacts (Submission nodes). Diamonds identify the assignment cohort window.</p></div></div>}{tab === "evidence" && <div className="lab-panel evidence-row-demo"><div className="evidence-row"><span className="row-status" /><strong>SUB-017</strong><span>→</span><strong>SUB-042</strong><span className="row-score">0.81</span><button>inspect <ChevronRight size={15} /></button></div><div className="evidence-row"><span className="row-status row-muted" /><strong>Student A</strong><span>→</span><strong>SUB-063</strong><span className="row-score">0.62</span><button>inspect <ChevronRight size={15} /></button></div><p className="lab-caption">Evidence rows keep the Winnowing score, direction, and action on one line for fast faculty review. The second row is below the direct-pair threshold — surfaced only by Neo4j traversal.</p></div>}{tab === "states" && <div className="lab-panel state-grid"><div><span className="state-dot online" /> <strong>Similarity engine ready</strong><small>Winnowing pipeline warm — awaiting next batch</small></div><div><span className="state-dot warning" /> <strong>Review needed</strong><small>3 Louvain clusters above threshold</small></div><div><span className="state-dot neutral" /> <strong>Ingesting</strong><small>Assignment 05 / 42% tokenised</small></div></div>}</section></>;
+  return <><PageIntro index="02" eyebrow="COMPONENTS / FACULTY DASHBOARD" title={<>A high-signal review surface for <em>faculty investigators.</em></>} body="These are the working pieces of the CollabGuard faculty dashboard: the Louvain cluster explorer, the evidence-chain graph, the node inspector with Winnowing fingerprint data, and the shortest-path playback panel." /><ClusterExplorer /><section className="components-showcase section-frame"><div className="showcase-header"><div><SectionMarker>04 — GRAPH VIEW</SectionMarker><h2>Evidence is the component.</h2></div><span className="demo-label"><CircleDot size={13} /> CLICK A NODE TO TRACE ITS LINKS</span></div><div className="component-grid"><div className="component-graph"><GraphBoard onSelect={selectNode} highlightedNodeIds={highlightedNodeIds} /></div><aside className="component-inspector"><div className="drawer-head"><span>NODE INSPECTOR / {selectedNode.kind.toUpperCase()}</span><ScanSearch size={17} /></div><div className="drawer-selected"><div className={`drawer-icon kind-${selectedNode.kind}`}>{selectedNode.short}</div><div><h3>{selectedNode.label}</h3><span>{selectedNode.meta}</span></div></div><p className="drawer-detail">{selectedInsight.signal}</p><div className="inspector-meta-grid"><div><span>OWNER / GROUP</span><strong>{selectedInsight.owner}</strong></div><div><span>COURSE WINDOW</span><strong>{selectedInsight.course}</strong></div><div><span>LAST OBSERVED</span><strong>{selectedInsight.lastSeen}</strong></div><div><span>FINGERPRINT</span><strong>{selectedInsight.fingerprint}</strong></div></div><div className="related-connections"><div className="related-heading"><span className="filter-label">RELATED NODES</span><strong>{relatedNodes.length} linked</strong></div>{relatedNodes.length ? <div className="related-list">{relatedNodes.map((node) => <button key={node.id} onClick={() => selectNode(node)}><span className={`related-dot dot-${node.kind}`} />{node.label}<ChevronRight size={13} /></button>)}</div> : <span className="related-empty">No related nodes in the current view.</span>}</div><div className="drawer-metrics"><div><span>WINNOWING SCORE</span><strong>{selectedNode.id === "sub-42" ? "0.81" : selectedNode.id === "sub-17" ? "0.81" : "0.62"}</strong></div><div><span>HOPS AWAY</span><strong>{selectedNode.id === "sub-42" ? "02" : "01"}</strong></div></div><button className={`evidence-toggle ${showHistory ? "is-open" : ""}`} onClick={() => setShowHistory((current) => !current)}><span><Clock3 size={14} /> {showHistory ? "Collapse evidence timeline" : "Expand evidence timeline"}</span><ChevronRight size={14} /></button>{showHistory && <div className="evidence-timeline">{selectedHistory.map((event, index) => <div className="evidence-event" key={`${event.time}-${event.label}`}><div className={`evidence-event-marker ${event.status}`}><span>{String(index + 1).padStart(2, "0")}</span></div><div className="evidence-event-copy"><div><strong>{event.label}</strong><time>{event.time}</time></div><p>{event.detail}</p></div></div>)}</div>}<button className="drawer-action" onClick={() => setTab("evidence")}>Open full evidence chain <ArrowUpRight size={15} /></button></aside></div></section><section className="component-lab section-frame"><div className="lab-tabs">{[["graph", "Graph nodes"], ["evidence", "Evidence row"], ["states", "System states"]].map(([key, label]) => <button key={key} className={tab === key ? "is-active" : ""} onClick={() => setTab(key)}>{label}</button>)}</div>{tab === "graph" && <div className="lab-panel"><div className="token-demo"><div className="token token-student">student</div><div className="token-line" /><div className="token token-submission">submission</div><div className="token-line" /><div className="token token-assignment">assignment</div></div><div><span className="overline">NODE LANGUAGE</span><h3>Three shapes, one readable graph.</h3><p>Shape carries semantic meaning before a faculty member opens the inspector. Circles identify people (Student nodes in Neo4j). Squares identify source artifacts (Submission nodes). Diamonds identify the assignment cohort window.</p></div></div>}{tab === "evidence" && <div className="lab-panel evidence-row-demo"><div className="evidence-row"><span className="row-status" /><strong>SUB-017</strong><span>→</span><strong>SUB-042</strong><span className="row-score">0.81</span><button>inspect <ChevronRight size={15} /></button></div><div className="evidence-row"><span className="row-status row-muted" /><strong>Student A</strong><span>→</span><strong>SUB-063</strong><span className="row-score">0.62</span><button>inspect <ChevronRight size={15} /></button></div><p className="lab-caption">Evidence rows keep the Winnowing score, direction, and action on one line for fast faculty review. The second row is below the direct-pair threshold — surfaced only by Neo4j traversal.</p></div>}{tab === "states" && <div className="lab-panel state-grid"><div><span className="state-dot online" /> <strong>Similarity engine ready</strong><small>Winnowing pipeline warm — awaiting next batch</small></div><div><span className="state-dot warning" /> <strong>Review needed</strong><small>3 Louvain clusters above threshold</small></div><div><span className="state-dot neutral" /> <strong>Ingesting</strong><small>Assignment 05 / 42% tokenised</small></div></div>}</section><CodeDiffViewer /><MLPredictInspector /></>;
 }
 
 function ResourcesPage() {
@@ -322,9 +324,129 @@ function DevRefreshNotice() {
   return null;
 }
 
+function FacultyAuthGate({ onNavigate }: { onNavigate: (path: RouteKey) => void }) {
+  const quickLoginGuide = () => {
+    const user = {
+      id: "fac_guide_vivek",
+      email: "faculty@vit.ac.in",
+      name: "Dr. D. Vivek (Faculty Guide)",
+      department: "School of Computer Science and Engineering (SCOPE)",
+      course_code: "BCSE406L",
+      role: "faculty",
+    };
+    localStorage.setItem("collabguard_user", JSON.stringify(user));
+    localStorage.setItem("collabguard_token", "jwt_guide_session_verified");
+    window.dispatchEvent(new Event("auth_changed"));
+  };
+
+  return (
+    <section className="section-frame" style={{ paddingTop: "4.5rem", paddingBottom: "6rem", textAlign: "center", maxWidth: "680px", margin: "0 auto" }}>
+      <div style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: "64px",
+        height: "64px",
+        borderRadius: "50%",
+        background: "rgba(255, 107, 95, 0.1)",
+        border: "1px solid rgba(255, 107, 95, 0.3)",
+        color: "#ff6b5f",
+        marginBottom: "1.5rem",
+      }}>
+        <ShieldCheck size={32} />
+      </div>
+      <span style={{
+        display: "block",
+        fontFamily: "var(--mono)",
+        fontSize: "11px",
+        letterSpacing: "0.15em",
+        textTransform: "uppercase",
+        color: "#ff6b5f",
+        marginBottom: "0.5rem",
+      }}>
+        ACADEMIC INTEGRITY ACCESS CONTROL · COURSE BCSE406L
+      </span>
+      <h1 style={{ fontSize: "clamp(1.8rem, 3vw, 2.6rem)", fontWeight: 800, margin: "0 0 1rem", letterSpacing: "-0.02em" }}>
+        Faculty Authorization <span style={{ color: "var(--primary)" }}>Required</span>
+      </h1>
+      <p style={{ color: "var(--muted)", fontSize: "15px", lineHeight: 1.6, margin: "0 0 2rem" }}>
+        The collusion graph explorer, AST code diffs, and NoSQL query engine contain sensitive student examination data. Access is restricted to authenticated faculty members, course guides, and evaluators.
+      </p>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "380px", margin: "0 auto" }}>
+        <button
+          onClick={() => onNavigate("/login")}
+          style={{
+            background: "var(--primary)",
+            color: "#0d0e0c",
+            padding: "12px 20px",
+            fontWeight: 700,
+            fontSize: "13px",
+            fontFamily: "var(--mono)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
+          }}
+        >
+          <span>Sign In with Faculty Account (JWT)</span>
+          <ArrowRight size={16} />
+        </button>
+
+        <button
+          onClick={quickLoginGuide}
+          style={{
+            background: "rgba(255, 255, 255, 0.04)",
+            color: "var(--foreground)",
+            border: "1px solid var(--line)",
+            padding: "10px 18px",
+            fontWeight: 600,
+            fontSize: "12px",
+            fontFamily: "var(--mono)",
+          }}
+        >
+          1-Click Authenticate as Guide Dr. D. Vivek
+        </button>
+
+        <button
+          onClick={() => onNavigate("/")}
+          style={{
+            background: "transparent",
+            color: "var(--muted)",
+            padding: "8px",
+            fontSize: "12px",
+            fontFamily: "var(--mono)",
+          }}
+        >
+          &larr; Return to Home Page
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const path = useRoute();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      try {
+        setIsLoggedIn(Boolean(localStorage.getItem("collabguard_user")));
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+    checkAuth();
+    window.addEventListener("storage", checkAuth);
+    window.addEventListener("auth_changed", checkAuth);
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("auth_changed", checkAuth);
+    };
+  }, []);
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -354,22 +476,29 @@ function App() {
     const description = document.querySelector('meta[name="description"]');
     description?.setAttribute("content", routeMeta[path].description);
   }, [path]);
+
+  const isFacultyProtected = path === "/components" || path === "/database";
   const page =
     path === "/" ? (
       <HomePage />
     ) : path === "/about" ? (
       <AboutPage />
-    ) : path === "/components" ? (
-      <ComponentsPage />
     ) : path === "/resources" ? (
       <ResourcesPage />
-    ) : path === "/database" ? (
-      <DatabaseOperations />
+    ) : path === "/architecture" ? (
+      <ArchitecturePage />
     ) : path === "/login" ? (
       <LoginPage onNavigate={navigate} />
+    ) : isFacultyProtected && !isLoggedIn ? (
+      <FacultyAuthGate onNavigate={navigate} />
+    ) : path === "/components" ? (
+      <ComponentsPage />
+    ) : path === "/database" ? (
+      <DatabaseOperations />
     ) : (
-      <ArchitecturePage />
+      <HomePage />
     );
+
   return <div className="site-shell"><NavShell navigate={navigate} theme={theme} onToggleTheme={() => setTheme((current) => current === "dark" ? "light" : "dark")} /><DevRefreshNotice /><main className="page-stage" key={path}>{page}</main><Footer /></div>;
 }
 

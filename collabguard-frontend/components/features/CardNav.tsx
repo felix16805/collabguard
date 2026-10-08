@@ -45,9 +45,28 @@ const CardNav = ({
   const [isHamburgerOpen, setIsHamburgerOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      try {
+        const user = localStorage.getItem("collabguard_user");
+        setIsLoggedIn(Boolean(user));
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+    checkAuth();
+    window.addEventListener("storage", checkAuth);
+    window.addEventListener("auth_changed", checkAuth);
+    return () => {
+      window.removeEventListener("storage", checkAuth);
+      window.removeEventListener("auth_changed", checkAuth);
+    };
+  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -190,13 +209,13 @@ const CardNav = ({
             </Link>
           </div>
 
-          {/* Faculty Login (Right of center) */}
+          {/* Faculty Login / My Account (Right of center) */}
           <Link
             href="/login"
             className="card-nav-signin"
             style={{ color: menuColor }}
           >
-            Faculty Login
+            {isLoggedIn ? "My Account" : "Faculty Login"}
           </Link>
 
           {/* Theme Toggle (Right edge) */}
