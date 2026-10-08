@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   ArrowDownRight,
   ArrowLeft,
@@ -144,38 +145,21 @@ function navigate(path: RouteKey) {
 }
 
 function useRoute(): RouteKey {
-  const [path, setPath] = useState<RouteKey>("/");
+  const pathname = usePathname();
+  const [clientPath, setClientPath] = useState<RouteKey>("/");
+
   useEffect(() => {
-    const getValidPath = (): RouteKey => {
+    const handlePop = () => {
       const p = window.location.pathname as RouteKey;
-      return p in routeLabels ? p : "/";
+      setClientPath(p in routeLabels ? p : "/");
     };
-    setPath(getValidPath());
-
-    const onPop = () => setPath(getValidPath());
-    window.addEventListener("popstate", onPop);
-
-    const originalPushState = window.history.pushState;
-    const originalReplaceState = window.history.replaceState;
-
-    window.history.pushState = function (...args) {
-      const result = originalPushState.apply(this, args);
-      setPath(getValidPath());
-      return result;
-    };
-    window.history.replaceState = function (...args) {
-      const result = originalReplaceState.apply(this, args);
-      setPath(getValidPath());
-      return result;
-    };
-
-    return () => {
-      window.removeEventListener("popstate", onPop);
-      window.history.pushState = originalPushState;
-      window.history.replaceState = originalReplaceState;
-    };
+    handlePop();
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
   }, []);
-  return path;
+
+  const currentPath = (pathname as RouteKey) in routeLabels ? (pathname as RouteKey) : clientPath;
+  return currentPath in routeLabels ? currentPath : "/";
 }
 
 function GraphBoard({ onSelect, compact = false, visibleNodeIds, nodes = graphNodes, edges = graphEdges, highlightedNodeIds = [], pathAnnotations = {} }: { onSelect: (node: GraphNode) => void; compact?: boolean; visibleNodeIds?: string[]; nodes?: GraphNode[]; edges?: readonly (readonly [string, string])[]; highlightedNodeIds?: string[]; pathAnnotations?: Record<string, PathAnnotation> }) {
