@@ -7,6 +7,7 @@ export function generateStaticParams() {
     { slug: ["components"] },
     { slug: ["resources"] },
     { slug: ["architecture"] },
+    { slug: ["database"] },
   ];
 }
 

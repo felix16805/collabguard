@@ -35,9 +35,10 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 import Lenis from "lenis";
 import NavShell from "./NavShell";
+import DatabaseOperations from "./DatabaseOperations";
 
 type NodeKind = "student" | "submission" | "assignment";
-type RouteKey = "/" | "/about" | "/components" | "/resources" | "/architecture";
+type RouteKey = "/" | "/about" | "/components" | "/resources" | "/architecture" | "/database";
 type GraphNode = {
   id: string;
   label: string;
@@ -56,6 +57,7 @@ const routeLabels: Record<RouteKey, string> = {
   "/components": "Components",
   "/resources": "References",
   "/architecture": "Architecture",
+  "/database": "NoSQL Database",
 };
 
 const routeMeta: Record<RouteKey, { title: string; description: string }> = {
@@ -64,6 +66,7 @@ const routeMeta: Record<RouteKey, { title: string; description: string }> = {
   "/components": { title: "Components — CollabGuard Faculty Dashboard", description: "Explore the interactive graph, cluster explorer, evidence chains, and system states of the CollabGuard review surface." },
   "/resources": { title: "References — CollabGuard", description: "10 journal and conference papers on code plagiarism detection, graph databases, Winnowing, and community detection algorithms." },
   "/architecture": { title: "Architecture — CollabGuard Data Flow", description: "How React + Next.js, FastAPI, MongoDB Atlas, and Neo4j AuraDB work together in the CollabGuard three-tier polyglot system." },
+  "/database": { title: "NoSQL Database Operations — CollabGuard Execution Engine", description: "Live CRUD operations, compound and text indexing with IXSCAN explain plans, multi-stage aggregation pipelines, and JSON document schemas." },
 };
 
 const graphNodes: GraphNode[] = [
@@ -324,7 +327,7 @@ function App() {
     const description = document.querySelector('meta[name="description"]');
     description?.setAttribute("content", routeMeta[path].description);
   }, [path]);
-  const page = path === "/" ? <HomePage /> : path === "/about" ? <AboutPage /> : path === "/components" ? <ComponentsPage /> : path === "/resources" ? <ResourcesPage /> : <ArchitecturePage />;
+  const page = path === "/" ? <HomePage /> : path === "/about" ? <AboutPage /> : path === "/components" ? <ComponentsPage /> : path === "/resources" ? <ResourcesPage /> : path === "/database" ? <DatabaseOperations /> : <ArchitecturePage />;
   return <div className="site-shell"><NavShell navigate={navigate} theme={theme} onToggleTheme={() => setTheme((current) => current === "dark" ? "light" : "dark")} /><DevRefreshNotice /><main className="page-stage" key={path}>{page}</main><Footer /></div>;
 }
 
