@@ -36,9 +36,10 @@ import { AnimatePresence, motion } from "motion/react";
 import Lenis from "lenis";
 import NavShell from "./NavShell";
 import DatabaseOperations from "./DatabaseOperations";
+import LoginPage from "./LoginPage";
 
 type NodeKind = "student" | "submission" | "assignment";
-type RouteKey = "/" | "/about" | "/components" | "/resources" | "/architecture" | "/database";
+type RouteKey = "/" | "/about" | "/components" | "/resources" | "/architecture" | "/database" | "/login";
 type GraphNode = {
   id: string;
   label: string;
@@ -58,6 +59,7 @@ const routeLabels: Record<RouteKey, string> = {
   "/resources": "References",
   "/architecture": "Architecture",
   "/database": "NoSQL Database",
+  "/login": "Faculty Login",
 };
 
 const routeMeta: Record<RouteKey, { title: string; description: string }> = {
@@ -67,6 +69,7 @@ const routeMeta: Record<RouteKey, { title: string; description: string }> = {
   "/resources": { title: "References — CollabGuard", description: "10 journal and conference papers on code plagiarism detection, graph databases, Winnowing, and community detection algorithms." },
   "/architecture": { title: "Architecture — CollabGuard Data Flow", description: "How React + Next.js, FastAPI, MongoDB Atlas, and Neo4j AuraDB work together in the CollabGuard three-tier polyglot system." },
   "/database": { title: "NoSQL Database Operations — CollabGuard Execution Engine", description: "Live CRUD operations, compound and text indexing with IXSCAN explain plans, multi-stage aggregation pipelines, and JSON document schemas." },
+  "/login": { title: "Faculty Login — CollabGuard Academic Portal", description: "Secure token-based authentication for course instructors and evaluators with JWT issuance and bcrypt verification." },
 };
 
 const graphNodes: GraphNode[] = [
@@ -141,10 +144,34 @@ function navigate(path: RouteKey) {
 function useRoute(): RouteKey {
   const [path, setPath] = useState<RouteKey>("/");
   useEffect(() => {
-    setPath((window.location.pathname as RouteKey) in routeLabels ? (window.location.pathname as RouteKey) : "/");
-    const onPop = () => setPath((window.location.pathname as RouteKey) in routeLabels ? (window.location.pathname as RouteKey) : "/");
+    const getValidPath = (): RouteKey => {
+      const p = window.location.pathname as RouteKey;
+      return p in routeLabels ? p : "/";
+    };
+    setPath(getValidPath());
+
+    const onPop = () => setPath(getValidPath());
     window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
+
+    const originalPushState = window.history.pushState;
+    const originalReplaceState = window.history.replaceState;
+
+    window.history.pushState = function (...args) {
+      const result = originalPushState.apply(this, args);
+      setPath(getValidPath());
+      return result;
+    };
+    window.history.replaceState = function (...args) {
+      const result = originalReplaceState.apply(this, args);
+      setPath(getValidPath());
+      return result;
+    };
+
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      window.history.pushState = originalPushState;
+      window.history.replaceState = originalReplaceState;
+    };
   }, []);
   return path;
 }
@@ -327,7 +354,22 @@ function App() {
     const description = document.querySelector('meta[name="description"]');
     description?.setAttribute("content", routeMeta[path].description);
   }, [path]);
-  const page = path === "/" ? <HomePage /> : path === "/about" ? <AboutPage /> : path === "/components" ? <ComponentsPage /> : path === "/resources" ? <ResourcesPage /> : path === "/database" ? <DatabaseOperations /> : <ArchitecturePage />;
+  const page =
+    path === "/" ? (
+      <HomePage />
+    ) : path === "/about" ? (
+      <AboutPage />
+    ) : path === "/components" ? (
+      <ComponentsPage />
+    ) : path === "/resources" ? (
+      <ResourcesPage />
+    ) : path === "/database" ? (
+      <DatabaseOperations />
+    ) : path === "/login" ? (
+      <LoginPage onNavigate={navigate} />
+    ) : (
+      <ArchitecturePage />
+    );
   return <div className="site-shell"><NavShell navigate={navigate} theme={theme} onToggleTheme={() => setTheme((current) => current === "dark" ? "light" : "dark")} /><DevRefreshNotice /><main className="page-stage" key={path}>{page}</main><Footer /></div>;
 }
 

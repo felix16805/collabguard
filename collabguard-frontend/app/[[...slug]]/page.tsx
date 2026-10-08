@@ -8,6 +8,7 @@ export function generateStaticParams() {
     { slug: ["resources"] },
     { slug: ["architecture"] },
     { slug: ["database"] },
+    { slug: ["login"] },
   ];
 }
 

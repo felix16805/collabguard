@@ -194,7 +194,9 @@ nosql-project/
     │       ├── CardNav.tsx             # Interactive floating card navigation bar
     │       ├── StaggeredMenu.tsx       # Mobile slide-out navigation menu
     │       ├── GraphBoard.tsx          # Real-time node/edge graph canvas visualizer
-    │       └── ClusterExplorer.tsx     # Louvain cluster inspector with risk tier badges
+    │       ├── ClusterExplorer.tsx     # Louvain cluster inspector with risk tier badges
+    │       ├── DatabaseOperations.tsx  # Interactive NoSQL CRUD, Indexing (IXSCAN), and Aggregations visualizer
+    │       └── LoginPage.tsx           # Dedicated Faculty JWT Login & Registration Portal with Claims Inspector
     └── lib/
         ├── api/
         │   ├── client.ts               # Frontend API client with fallback to mock data
@@ -408,7 +410,8 @@ ORDER BY co_conspirators_count DESC, mean_shared_similarity DESC;
 
 1. **Faculty Review Dashboard**: Navigate to `http://localhost:3000/components` for the interactive graph canvas, Louvain community explorer, and shortest-path playback.
 2. **Interactive NoSQL Operations Visualizer**: Navigate to `http://localhost:3000/database` for live CRUD execution, interactive `explain()` execution plan analyzer, real-time aggregation pipeline inspection, and schema definitions.
-3. **API & Database Swagger UI**: Access `http://localhost:8000/api/docs` to test all CRUD, indexing, and aggregation endpoints interactively via Swagger UI.
+3. **Faculty Authentication Portal**: Navigate to `http://localhost:3000/login` to authenticate via JWT (with quick-fill presets for Guide Dr. D. Vivek `faculty@vit.ac.in` and Student Lead Dipanjan Das `demo@collabguard.edu`), register accounts, and inspect cryptographic claims in real time.
+4. **API & Database Swagger UI**: Access `http://localhost:8000/api/docs` to test all CRUD, indexing, aggregation, and authentication endpoints interactively via Swagger UI.
 
 ---
 

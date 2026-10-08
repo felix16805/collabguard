@@ -4,7 +4,7 @@ import CardNav from "./CardNav";
 import { StaggeredMenu } from "./StaggeredMenu";
 import { Moon, Sun } from "lucide-react";
 
-type RouteKey = "/" | "/about" | "/components" | "/resources" | "/architecture" | "/database";
+type RouteKey = "/" | "/about" | "/components" | "/resources" | "/architecture" | "/database" | "/login";
 
 const CARD_NAV_ITEMS = [
   {
@@ -14,6 +14,7 @@ const CARD_NAV_ITEMS = [
     links: [
       { label: "Home", href: "/" },
       { label: "About", href: "/about" },
+      { label: "Faculty Login", href: "/login" },
     ],
   },
   {
@@ -38,6 +39,7 @@ const CARD_NAV_ITEMS = [
 
 const MOBILE_MENU_ITEMS = [
   { label: "Home", link: "/" },
+  { label: "Faculty Login", link: "/login" },
   { label: "About the Project", link: "/about" },
   { label: "Dashboard Demo", link: "/components" },
   { label: "NoSQL Database (CRUD/Index/Agg)", link: "/database" },
