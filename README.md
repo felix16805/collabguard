@@ -257,6 +257,154 @@ npm run dev
 # Access at http://localhost:3000
 ```
 
+### 5.3 Database Setup & Sample-Data Seeding Instructions
+
+CollabGuard includes a realistic synthetic dataset for course **BCSE406L (NoSQL Databases)**, batch **NS25**, consisting of 7 student submissions with seeded collusion patterns (direct pairs, variable renaming, and multi-hop indirect collusion through bridge submissions).
+
+You can seed both **MongoDB** and **Neo4j** using any of the four methods below:
+
+#### Method 1: Automated Lifecycle Seeding (Zero Configuration)
+The FastAPI backend lifespan event (`app/main.py`) automatically initializes MongoDB collections, builds compound indexes, and seeds the sample dataset upon startup.
+- If you use `docker compose up -d`, the database is automatically seeded and ready for demonstration without any manual steps.
+
+#### Method 2: One-Command REST API Trigger (CLI / cURL / PowerShell)
+To reset or re-seed the databases with fresh sample data at any time, execute the seeding endpoint:
+
+**Using cURL / Bash:**
+```bash
+curl -X POST http://localhost:8000/api/v1/demo/seed \
+     -H "Content-Type: application/json"
+```
+
+**Using PowerShell (Windows):**
+```powershell
+Invoke-RestMethod -Method POST -Uri "http://localhost:8000/api/v1/demo/seed" | ConvertTo-Json -Depth 4
+```
+
+**Expected JSON Response:**
+```json
+{
+  "message": "Demo batch NS25 seeded successfully",
+  "batch_id": "batch_ns25_demo",
+  "summary": {
+    "batch_id": "batch_ns25_demo",
+    "submission_count": 7,
+    "flagged_pairs_count": 6
+  },
+  "flagged_pairs": [
+    {
+      "sub1_id": "sub_dijkstra_01",
+      "sub2_id": "sub_dijkstra_02",
+      "student1_name": "Aarav Sharma",
+      "student2_name": "Rohan Verma",
+      "score": 0.862,
+      "jaccard": 0.781,
+      "risk_tier": "CRITICAL"
+    }
+  ],
+  "clusters": [
+    {
+      "id": "C-01",
+      "label": "Dijkstra Collusion Ring",
+      "size": 5,
+      "density": 0.82
+    }
+  ]
+}
+```
+
+#### Method 3: Standalone Python Seeding Script
+A dedicated Python seeding script is provided in `collabguard-backend/scripts/seed_db.py`. This connects directly to MongoDB (`localhost:27017`) and Neo4j (`bolt://localhost:7687`), parses AST tokens, computes Winnowing fingerprints, and stores the records and graph topology:
+
+```bash
+cd collabguard-backend
+python scripts/seed_db.py
+```
+
+#### Method 4: Manual Shell Import (`mongosh` & `cypher-shell`)
+
+##### A. MongoDB Manual Setup & Data Injection (`mongosh`):
+Connect to MongoDB via the container or local client:
+```bash
+# Connect via Docker container
+docker exec -it collabguard-mongo mongosh collabguard
+```
+Execute the following statements in `mongosh`:
+```javascript
+// 1. Ensure Indexes
+db.students.createIndex({ student_id: 1 }, { unique: true });
+db.similarity_pairs.createIndex({ batch_id: 1, score: -1 }, { name: "idx_pairs_batch_score" });
+
+// 2. Insert Sample Students
+db.students.insertMany([
+  { student_id: "21BCE1001", name: "Aarav Sharma", reg_no: "21BCE1001", batch: "NS25", course_code: "BCSE406L" },
+  { student_id: "21BCE1042", name: "Rohan Verma", reg_no: "21BCE1042", batch: "NS25", course_code: "BCSE406L" },
+  { student_id: "21BCE1098", name: "Ananya Iyer", reg_no: "21BCE1098", batch: "NS25", course_code: "BCSE406L" }
+]);
+
+// 3. Insert Sample Submissions
+db.submissions.insertMany([
+  {
+    id: "sub_dijkstra_01",
+    student_id: "21BCE1001",
+    batch_id: "batch_ns25_demo",
+    assignment_id: "BCSE406L_DA1_GRAPH",
+    filename: "dijkstra_aarav.py",
+    token_count: 84,
+    submitted_at: new Date()
+  },
+  {
+    id: "sub_dijkstra_02",
+    student_id: "21BCE1042",
+    batch_id: "batch_ns25_demo",
+    assignment_id: "BCSE406L_DA1_GRAPH",
+    filename: "shortest_path_rohan.py",
+    token_count: 84,
+    submitted_at: new Date()
+  }
+]);
+
+// 4. Verify counts
+db.students.countDocuments();
+db.submissions.countDocuments();
+```
+
+##### B. Neo4j Manual Setup & Cypher Graph Injection (`cypher-shell`):
+Connect to Neo4j via `cypher-shell`:
+```bash
+# Connect via Docker container (password: collabguard_neo4j_password)
+docker exec -it collabguard-neo4j cypher-shell -u neo4j -p collabguard_neo4j_password
+```
+Execute the following Cypher statements:
+```cypher
+// 1. Create Schema Constraints & Index
+CREATE CONSTRAINT student_id_unique IF NOT EXISTS FOR (s:Student) REQUIRE s.id IS UNIQUE;
+CREATE CONSTRAINT submission_id_unique IF NOT EXISTS FOR (sub:Submission) REQUIRE sub.id IS UNIQUE;
+CREATE INDEX similarity_score_idx IF NOT EXISTS FOR ()-[r:SIMILAR_TO]-() ON (r.score);
+
+// 2. Create Student & Submission Nodes
+MERGE (s1:Student {id: "21BCE1001", name: "Aarav Sharma", reg_no: "21BCE1001"})
+MERGE (s2:Student {id: "21BCE1042", name: "Rohan Verma", reg_no: "21BCE1042"})
+MERGE (s3:Student {id: "21BCE1098", name: "Ananya Iyer", reg_no: "21BCE1098"})
+
+MERGE (sub1:Submission {id: "sub_dijkstra_01", batch_id: "batch_ns25_demo", assignment_id: "BCSE406L_DA1_GRAPH"})
+MERGE (sub2:Submission {id: "sub_dijkstra_02", batch_id: "batch_ns25_demo", assignment_id: "BCSE406L_DA1_GRAPH"})
+MERGE (sub3:Submission {id: "sub_dijkstra_03", batch_id: "batch_ns25_demo", assignment_id: "BCSE406L_DA1_GRAPH"})
+
+// 3. Connect Submission Relationships
+MERGE (s1)-[:SUBMITTED]->(sub1)
+MERGE (s2)-[:SUBMITTED]->(sub2)
+MERGE (s3)-[:SUBMITTED]->(sub3)
+
+// 4. Create Weighted SIMILAR_TO Edges
+MERGE (sub1)-[:SIMILAR_TO {score: 0.862, overlap_count: 38, algorithm: "winnowing_ast_v1"}]->(sub2)
+MERGE (sub2)-[:SIMILAR_TO {score: 0.741, overlap_count: 32, algorithm: "winnowing_ast_v1"}]->(sub3);
+
+// 5. Query the Collusion Chain
+MATCH path = (s:Student)-[:SUBMITTED]->(:Submission)-[:SIMILAR_TO*1..2]-(:Submission)<-[:SUBMITTED]-(other:Student)
+RETURN path LIMIT 10;
+```
+
 ---
 
 ## 6. Testing & Quality Assurance
