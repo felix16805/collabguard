@@ -240,11 +240,17 @@ class MongoDBManager:
             try:
                 explain_plan = await self.db.similarity_pairs.find(query).sort("score", -1).explain()
                 winning_plan = explain_plan.get("queryPlanner", {}).get("winningPlan", {})
+                input_stage = winning_plan.get("inputStage", {})
+                is_ixscan = (
+                    winning_plan.get("stage") == "IXSCAN"
+                    or input_stage.get("stage") == "IXSCAN"
+                )
                 return {
-                    "stage": winning_plan.get("stage", "IXSCAN"),
-                    "index_name": winning_plan.get("inputStage", {}).get("indexName", "idx_pairs_batch_score_compound"),
+                    "stage": "IXSCAN" if is_ixscan else winning_plan.get("stage", "COLLSCAN"),
+                    "index_name": input_stage.get("indexName") or winning_plan.get("indexName", "idx_pairs_batch_score_compound"),
                     "filter": query,
-                    "is_index_used": True,
+                    "is_index_used": is_ixscan,
+                    "execution_stage": winning_plan.get("stage", "FETCH"),
                     "explain_raw": explain_plan,
                 }
             except Exception as e:
